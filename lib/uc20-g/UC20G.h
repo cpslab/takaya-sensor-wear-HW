@@ -12,8 +12,10 @@ class UC20G
     //AT+QIDEACT=1
     bool init(String apn, String user, String pass);
     bool disconnect();
+    bool disable();
   private:
     SoftwareSerial *uc20SwSerial;
+    void clearSerialBuffer();
 };
 
 #endif

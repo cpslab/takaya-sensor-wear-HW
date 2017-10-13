@@ -1,64 +1,106 @@
 #include <SoftwareSerial.h>
 #include "UC20G.h"
- #include <Arduino.h> 
+#include <Arduino.h>
+
+#define DEBUG 1
 //constractor
 UC20G::UC20G(SoftwareSerial *ser)
 {
   uc20SwSerial = ser;
   uc20SwSerial->begin(115200);
+  uc20SwSerial->setTimeout(10000);
 }
 
 bool UC20G::init(String apn, String user, String pass)
 {
-  //AT+QICSGP=1,1,"SORACOM.IO","sora","sora",0
-  String str = "AT+QIDEACT=1\r\n";
-  uc20SwSerial->print(str);
-  String  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
-  Serial.println(ret);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
-  Serial.println(ret);
+  //最初にとりあえずデアクティベートしておくことでアクティベート時のエラー回避
+  String str, ret;
 
-  str = "AT+QICSGP=1,1,\"" + apn + "\",\"" + user + "\",\"" + pass + "\",0\r\n";
-//  String str = "AT+QICSGP=1,1,\"SORACOM.IO\",\"sora\",\"sora\",0\r\n";
+  clearSerialBuffer();
+  str = "AT+QIDEACT=1\r\n";
   uc20SwSerial->print(str);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
+  ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
+  ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret);
-  
+  if (ret.indexOf("OK") == -1) {  //ちゃんと動くか未確認
+    Serial.println("miss init deact");
+    return false;
+  }
+
+  clearSerialBuffer();
+  str = "AT+QICSGP=1,1,\"" + apn + "\",\"" + user + "\",\"" + pass + "\",0\r\n";
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
+  Serial.println(ret);
+  ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
+  Serial.println(ret);
+  if (ret.indexOf("OK") == -1) {  //ちゃんと動くか未確認
+    Serial.println("miss csgp");
+    return false;
+  }
+
+  clearSerialBuffer();
   str = "AT+QIACT=1\r\n";
   uc20SwSerial->print(str);
-  delay(4000);  
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
+  ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
   Serial.println(ret);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
+  ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
   Serial.println(ret);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
-  Serial.println(ret);
-  ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
-  Serial.println(ret);
-//  if(ret.indexOf("OK")){    //ちゃんと動くか未確認
-//    Serial.println("initOK");
-//    return true;
-//  }else{
-//    return false;
-//  }
-  return true;  //今はてきとうに返してる モジュールからの戻り値をちゃんと読んで適切に返す
+  if (ret.indexOf("OK") == -1) {  //ちゃんと動くか未確認
+    Serial.println("miss act");
+    return false;
+  }
+
+
+  return true;
 }
 
 bool UC20G::disconnect()
 {
-  String str = "AT+QIDEACT=1";
+  String str, ret;
+
+  clearSerialBuffer();
+  str = "AT+QIDEACT=1";
   uc20SwSerial->println(str);
-  delay(4000);  
-  String ret = uc20SwSerial->readStringUntil('\n');    //タイムアウトをつけないとここで止まりそう
+  ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
   Serial.println(ret);
-  if(ret.indexOf("OK")){    //ちゃんと動くか未確認
-    Serial.println("disconnect OK");
-    return true;
-  }else{
+  ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
+  Serial.println(ret);
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss deact");
     return false;
   }
-//  return true;  //今はてきとうに返してる モジュールからの戻り値をちゃんと読んで適切に返す
+
+  return true;
+}
+
+bool UC20G::disable()
+{
+  String str, ret;
+
+  clearSerialBuffer();
+  str = "AT+QPOWD";
+  uc20SwSerial->println(str);
+  ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
+  Serial.println(ret);
+  ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
+  Serial.println(ret);
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss deact");
+    return false;
+  }
+
+  return true;
+}
+
+void UC20G::clearSerialBuffer() {
+  while (1) {
+    if (uc20SwSerial->available()) {
+      uc20SwSerial->read();
+    }else{
+      break;
+    }
+  }
 }
 
