@@ -13,7 +13,7 @@ class UC20G
     bool init(String apn, String user, String pass);
     bool disconnect();
     bool disable();
-    bool udpSend(String ipAdress, String port, String message);
+    bool udpSend(String ipAdress, String port, const char* message);
     bool at();
   private:
     SoftwareSerial *uc20SwSerial;
