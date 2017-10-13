@@ -5,16 +5,15 @@
 class UC20G
 {
   public:
-    UC20G(int rx_pin, int tx_pin);
+    UC20G(SoftwareSerial *ser);
     
     //初期化用の関数
     //AT+QICSGP=1,1,"SORACOM.IO","sora","sora",0
     //AT+QIDEACT=1
-    boolean UC20G_init(String apn, String user, String pass);
-    boolean UC20G_disconnect();
+    bool init(String apn, String user, String pass);
+    bool disconnect();
   private:
-    int Rx_Pin;
-    int Tx_Pin;
-}
+    SoftwareSerial *uc20SwSerial;
+};
 
 #endif
