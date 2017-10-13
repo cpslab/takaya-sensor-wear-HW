@@ -9,11 +9,6 @@ void setup() {
   Serial.println("");
   Serial.println("");
 
-//  bool sora = myUC20G.init("SORACOM.IO", "sora", "sora");
-//  Serial.println(sora);
-//  delay(20000);
-//  sora = myUC20G.disconnect();
-//  Serial.println(sora);
 }
 
 char input = ' ';
@@ -31,6 +26,9 @@ void loop() {
       break;
     case 'c':
       myUC20G.disable();
+      break;
+    case 't':
+      myUC20G.at();
       break;
   }
 }

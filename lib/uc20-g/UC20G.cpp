@@ -61,8 +61,8 @@ bool UC20G::disconnect()
   String str, ret;
 
   clearSerialBuffer();
-  str = "AT+QIDEACT=1";
-  uc20SwSerial->println(str);
+  str = "AT+QIDEACT=1\r\n";
+  uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
   Serial.println(ret);
   ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
@@ -80,8 +80,8 @@ bool UC20G::disable()
   String str, ret;
 
   clearSerialBuffer();
-  str = "AT+QPOWD";
-  uc20SwSerial->println(str);
+  str = "AT+QPOWD\r\n";
+  uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');  //打ったコマンドが帰ってくる
   Serial.println(ret);
   ret = uc20SwSerial->readStringUntil('\n');  //コマンドに対する応答
@@ -91,6 +91,25 @@ bool UC20G::disable()
     return false;
   }
 
+  return true;
+}
+
+bool UC20G::at()
+{
+  String str,ret;
+
+  clearSerialBuffer();
+  str = "AT\r\n";
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret);
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss deact");
+    return false;
+  }
+  Serial.println("at program");
   return true;
 }
 

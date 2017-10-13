@@ -13,6 +13,7 @@ class UC20G
     bool init(String apn, String user, String pass);
     bool disconnect();
     bool disable();
+    bool at();
   private:
     SoftwareSerial *uc20SwSerial;
     void clearSerialBuffer();
