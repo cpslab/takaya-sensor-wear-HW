@@ -113,28 +113,45 @@ bool UC20G::udpSend(String ipAdress, String port, String message)
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // +QIOPEN: 0,0
 
-  // AT+QISEND
-  str = "AT+QISEND=0,13";
-  uc20SwSerial->print(str);
-  ret = uc20SwSerial->readStringUntil('\n');
-  Serial.println(ret); // AT+QISEND=0,13
-  ret = uc20SwSerial->readStringUntil('\n');
-  Serial.println(ret); // >
-  usleep(2000000);
-  str = message;
-  uc20SwSerial->print(str);
-  ret = uc20SwSerial->readStringUntil('\n');
-  Serial.println(ret); // [{hoge:huga}]
-  ret = uc20SwSerial->readStringUntil('\n');
-  Serial.println(ret); // send ok
-  Serial.println(ret); // send ok
-  Serial.println(ret); // send ok
+  // 文字の抜き出し
+  int indexA,indexB;
+  String resultA,resultB;
+  indexA = ret.indexOf(":");
+  indexB = ret.indexOf(",");
+  Serial.println(indexA);
+  Serial.println(indexB);
+  //resultA = ret.substring(9,10);
+  resultA = ret.substring(indexA+2,indexB);
+  Serial.println(resultA);
+  
 
+//  // AT+QISEND
+//  str = "AT+QISEND=0,13";
+//  uc20SwSerial->print(str);
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // AT+QISEND=0,13
+//  //str = "0x1A";
+//  str = "1A";
+//  uc20SwSerial->print(str);
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // >
+//  str = message;
+//  uc20SwSerial->print(str);
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // [{hoge:huga}]
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // send ok
+//  Serial.println(ret); // send ok
+//  Serial.println(ret); // send ok
+//
+  // AT+QICLOSE = 1
   Serial.println("at program");
   str = "AT+QICLOSE=1";
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // AT+QICLOSE=1
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // OK
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // OK
   return true;
