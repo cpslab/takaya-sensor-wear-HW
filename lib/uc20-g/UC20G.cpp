@@ -129,15 +129,17 @@ bool UC20G::udpSend(String ipAdress, String port, const char* message)
   String l = String(len);
 
   // AT+QISEND
-  str = "AT+QISEND="+resultA+","+l;
+  str = "AT+QISEND="+resultA+","+l+"\r\n";
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // AT+QISEND=0,13
-  //str = "0x1A";
-  str = "1A";
-  uc20SwSerial->print(str);
-  ret = uc20SwSerial->readStringUntil('\n');
+  ret = uc20SwSerial->readStringUntil('>');
   Serial.println(ret); // >
+//  //str = "0x1A";
+//  str = "1A";
+//  uc20SwSerial->print(str);
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // >
   str = message;
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
@@ -149,7 +151,7 @@ bool UC20G::udpSend(String ipAdress, String port, const char* message)
 
   // AT+QICLOSE = 1
   Serial.println("at program");
-  str = "AT+QICLOSE=1";
+  str = "AT+QICLOSE=1\r\n";
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // AT+QICLOSE=1
