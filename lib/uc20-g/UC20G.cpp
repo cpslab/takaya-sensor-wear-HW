@@ -94,6 +94,74 @@ bool UC20G::disable()
   return true;
 }
 
+
+bool UC20G::udpSend(String ipAdress, String port, const char* message)
+{
+  String str,ret;
+
+  clearSerialBuffer();
+
+  // AT+QIOPEN
+  str = "AT+QIOPEN=1,0,\"UDP\",\"" + ipAdress  + "\"," + port +",0,1\r\n";
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // AT~
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // OK
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // 空白
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // +QIOPEN: 0,0
+
+  // 文字の抜き出し
+  int indexA,indexB;
+  String resultA,resultB;
+  indexA = ret.indexOf(":");
+  indexB = ret.indexOf(",");
+  Serial.println(indexA);
+  Serial.println(indexB);
+  resultA = ret.substring(indexA+2,indexB);
+  Serial.println(resultA);
+  
+  // 文字のカウント
+  int len = strlen(message);
+  Serial.println(len);
+  String l = String(len);
+
+  // AT+QISEND
+  str = "AT+QISEND="+resultA+","+l+"\r\n";
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // AT+QISEND=0,13
+  ret = uc20SwSerial->readStringUntil('>');
+  Serial.println(ret); // >
+//  //str = "0x1A";
+//  str = "1A";
+//  uc20SwSerial->print(str);
+//  ret = uc20SwSerial->readStringUntil('\n');
+//  Serial.println(ret); // >
+  str = message;
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // [{hoge:huga}]
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // send ok
+  Serial.println(ret); // send ok
+  Serial.println(ret); // send ok
+
+  // AT+QICLOSE = 1
+  Serial.println("at program");
+  str = "AT+QICLOSE=1\r\n";
+  uc20SwSerial->print(str);
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // AT+QICLOSE=1
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // OK
+  ret = uc20SwSerial->readStringUntil('\n');
+  Serial.println(ret); // OK
+  return true;
+}
+
 bool UC20G::at()
 {
   String str,ret;

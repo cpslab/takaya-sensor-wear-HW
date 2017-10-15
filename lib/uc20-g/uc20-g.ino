@@ -1,5 +1,6 @@
 #include "UC20G.h"
 #include <SoftwareSerial.h>
+
 SoftwareSerial mySerial(5, 4); // RX, TX
 UC20G myUC20G(&mySerial);
 void setup() {
@@ -26,6 +27,9 @@ void loop() {
       break;
     case 'c':
       myUC20G.disable();
+      break;
+    case 's':
+      myUC20G.udpSend("beam.soracom.io", "23080", "[{hoge:huga}]");
       break;
     case 't':
       myUC20G.at();
