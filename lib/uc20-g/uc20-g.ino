@@ -29,7 +29,7 @@ void loop() {
       myUC20G.disable();
       break;
     case 's':
-      myUC20G.udpSend("sensor-uniform.cps.im.dendai.ac.jp", "23080", "[{hoge:huga}]");
+      myUC20G.udpSend("beam.soracom.io", "23080", "[{hoge:huga}]");
       break;
     case 't':
       myUC20G.at();
