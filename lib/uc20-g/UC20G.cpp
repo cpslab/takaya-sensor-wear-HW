@@ -97,7 +97,7 @@ bool UC20G::disable()
 
 bool UC20G::udpSend(String ipAdress, String port, const char* message)
 {
-  String str,ret;
+  String str,ret,sendMessage;
 
   clearSerialBuffer();
 
@@ -135,31 +135,29 @@ bool UC20G::udpSend(String ipAdress, String port, const char* message)
   Serial.println(ret); // AT+QISEND=0,13
   ret = uc20SwSerial->readStringUntil('>');
   Serial.println(ret); // >
-//  //str = "0x1A";
-//  str = "1A";
-//  uc20SwSerial->print(str);
-//  ret = uc20SwSerial->readStringUntil('\n');
-//  Serial.println(ret); // >
   str = message;
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // [{hoge:huga}]
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // send ok
-  Serial.println(ret); // send ok
-  Serial.println(ret); // send ok
+  sendMessage = ret;
 
   // AT+QICLOSE = 1
-  Serial.println("at program");
   str = "AT+QICLOSE=1\r\n";
   uc20SwSerial->print(str);
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // AT+QICLOSE=1
   ret = uc20SwSerial->readStringUntil('\n');
   Serial.println(ret); // OK
-  ret = uc20SwSerial->readStringUntil('\n');
-  Serial.println(ret); // OK
-  return true;
+
+  if(sendMessage.indexOf("SEND OK") == -1){
+    Serial.println("Send Failed");
+    return false;
+  }else {
+    Serial.println("Send Sucsess");
+    return true;
+  }
 }
 
 bool UC20G::at()
