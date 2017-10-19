@@ -117,8 +117,19 @@ void loop() {
       }
     }
     for (i = 0; i < j; i++) {
-      if(dataes[i].startsWith("$GPGGA")){
-        Serial.print(dataes[i]);
+      if (dataes[i].startsWith("$GPGGA")) {
+        //        Serial.print(dataes[i]);
+        String gpgga = dataes[i].substring(7);
+//        Serial.println(gpgga);
+        String d[4] = {"","","",""};
+        d[0] = gpgga.substring(11,20);//緯度
+        Serial.println(d[0]);
+        d[1] = gpgga.substring(21,22);//北緯、南緯
+        Serial.println(d[1]);
+        d[2] = gpgga.substring(23,33);//経度
+        Serial.println(d[2]);
+        d[3] = gpgga.substring(34,35);//東経、西経
+        Serial.println(d[3]);
       }
     }
   }
