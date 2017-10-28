@@ -3,6 +3,7 @@
 const int addr = (0x98 >> 1);    // define the I2C Address
 // general register definition
 const uint8_t RHR = (0x00 << 3); //Receive Holding Register
+ 
 const uint8_t THR = (0x00 << 3); //Transmit Holding Register
 const uint8_t FCR = (0x02 << 3); //FIFO Control Register
 const uint8_t LCR = (0x03 << 3); //FLine Control Register
@@ -118,18 +119,22 @@ void loop() {
     }
     for (i = 0; i < j; i++) {
       if (dataes[i].startsWith("$GPGGA")) {
-        //        Serial.print(dataes[i]);
+                Serial.print(dataes[i]);
         String gpgga = dataes[i].substring(7);
 //        Serial.println(gpgga);
         String d[4] = {"","","",""};
         d[0] = gpgga.substring(11,20);//緯度
-        Serial.println(d[0]);
         d[1] = gpgga.substring(21,22);//北緯、南緯
-        Serial.println(d[1]);
         d[2] = gpgga.substring(23,33);//経度
-        Serial.println(d[2]);
         d[3] = gpgga.substring(34,35);//東経、西経
-        Serial.println(d[3]);
+        if(d[0].startsWith(",")){
+          Serial.println("false");
+        }else{
+          Serial.println(d[0]);
+          Serial.println(d[1]);
+          Serial.println(d[2]);
+          Serial.println(d[3]);
+        }
       }
     }
   }
