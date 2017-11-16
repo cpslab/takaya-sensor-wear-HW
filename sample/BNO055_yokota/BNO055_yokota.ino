@@ -1,10 +1,12 @@
 #include "NineAxesMotion.h"        //Contains the bridge code between the API and the Arduino Environment
 #include <Wire.h>
 
-#define INT_PIN 13   // Interrupt用ピン
-#define RESET_PIN 4 // Reset用ピン(使わないだろうけど)
+#define INT_PIN 25   // Interrupt用ピン
+#define RESET_PIN 26 // Reset用ピン(使わないだろうけど)
 
 NineAxesMotion mySensor;   //Object that for the sensor
+unsigned long lastStreamTime = 0;     //To store the last streamed time stamp
+const int streamPeriod = 2000;
 
 // ↓閾値なんだけど単位がよくわかってない
 int threshold = 5;              //At a Range of 4g, the threshold is set at 39.05mg or 0.3830m/s2. This Range is the default for NDOF Mode
@@ -23,7 +25,7 @@ void setup() //This code is executed once
   mySensor.initSensor();          //The I2C Address can be changed here inside this function in the library
   pinMode(INT_PIN, INPUT_PULLUP); // ライブラリ側の設定を無視してINT_PINとRESET_PINを再設定(ライブラリ側でもpinMode()を2つ呼び出してるだけ)
   pinMode(RESET_PIN, OUTPUT); // 同上、今回使わないだろうけど一応。
-    
+
   // ↓正直よくわかっていない
   mySensor.setOperationMode(OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired
   mySensor.setUpdateMode(MANUAL);  //The default is AUTO. Changing to manual requires calling the relevant update functions prior to calling the read functions
@@ -46,6 +48,31 @@ void setup() //This code is executed once
 
 void loop() //This code is looped forever
 {
+  if ((millis() - lastStreamTime) >= streamPeriod)
+  {
+    lastStreamTime = millis();
+    mySensor.updateEuler();        //Update the Euler data into the structure of the object
+    mySensor.updateCalibStatus();  //Update the Calibration Status
+
+    Serial.print("Time: ");
+    Serial.print(lastStreamTime);
+    Serial.print("ms ");
+
+    Serial.print(" H: ");
+    Serial.print(mySensor.readEulerHeading()); //Heading data
+    Serial.print("deg ");
+
+    Serial.print(" R: ");
+    Serial.print(mySensor.readEulerRoll()); //Roll data
+    Serial.print("deg");
+
+    Serial.print(" P: ");
+    Serial.print(mySensor.readEulerPitch()); //Pitch data
+    Serial.print("deg ");
+
+    Serial.println();
+  }
+
   //digitalPin監視
   //Serial.print("pin D2:");
   //int intPin = digitalRead(2);
@@ -53,9 +80,10 @@ void loop() //This code is looped forever
 
   //InterruptPinの設定はライブラリに依存(元がArduinoのシールド製品用のライブラリのため)
   if (digitalRead(INT_PIN)) { // InterruptPinがHIGHになったとき(=Interruptされたとき)反応する
-    Serial.print("I'm dead!!!!!!!!!!!!!!");      Serial.println(deadCount); // 確認用カウンタ表示
+    //    Serial.print("I'm dead!!!!!!!!!!!!!!");      Serial.println(deadCount); // 確認用カウンタ表示
+    Serial.print("Moved!:");      Serial.println(deadCount); // 確認用カウンタ表示
     deadCount++;  // 死んだ回数を増やします
     mySensor.resetInterrupt();          //Reset the interrupt line  →これが無いとInterruptのピンがLowに戻らない
-    delay(100); // 別にいらないんだけど、これが無いとカウンタが一気に4つくらい増えたりするのでとりま記述
+//    delay(100); // 別にいらないんだけど、これが無いとカウンタが一気に4つくらい増えたりするのでとりま記述
   }
 }
