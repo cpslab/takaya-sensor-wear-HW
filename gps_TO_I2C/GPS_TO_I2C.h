@@ -1,6 +1,7 @@
 #ifndef GPS_TO_I2C_h
 #define GPS_TO_I2C_h
-#include <SoftwareSerial.h>
+#include <HardwareSerial.h>
+#include <stdio.h>
 
 typedef struct{
     String La;
@@ -13,15 +14,13 @@ typedef struct{
 class GPS_TO_I2C
 {
 public:
-    GPS_TO_I2C(SoftwareSerial *ser);
+    GPS_TO_I2C(HardwareSerial *ser);
     
     bool init();
     bool get_gps(gpsdata *gps);
 private:
-    SoftwareSerial *gpsSwSerial;
+    HardwareSerial *gpsSwSerial;
     gpsdata *gpsData;
 }
-
-#include <stdio.h>
 
 #endif /* GPS_TO_I2C_h */

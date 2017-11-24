@@ -6,7 +6,7 @@
 //
 
 #include "GPS_TO_I2C.h"
-#include <SoftwareSerial.h>
+#include <HardwareSerial.h>
 #include <Arduino.h>
 #include "Wire.h"
 
@@ -29,7 +29,7 @@ String dataes[6];
 uint8_t j = 0;
 bool flag = false;
 
-GPS_TO_I2C::GPS_TO_I2C(SoftwareSerial *ser){
+GPS_TO_I2C::GPS_TO_I2C(HardwareSerial *ser){
     gpsSwSerial = ser;
     gpsSwSerial->begin(9600);
     gpsSwSerial->setTimeout(10000);
