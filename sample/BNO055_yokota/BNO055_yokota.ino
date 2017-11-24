@@ -1,8 +1,8 @@
 #include "NineAxesMotion.h"        //Contains the bridge code between the API and the Arduino Environment
 #include <Wire.h>
 
-#define INT_PIN 25   // Interrupt用ピン
-#define RESET_PIN 26 // Reset用ピン(使わないだろうけど)
+#define INT_PIN 35   // Interrupt用ピン
+#define RESET_PIN 32 // Reset用ピン(使わないだろうけど)
 
 NineAxesMotion mySensor;   //Object that for the sensor
 unsigned long lastStreamTime = 0;     //To store the last streamed time stamp
@@ -17,7 +17,7 @@ int deadCount = 0;  // 死んだ回数を数えます
 void setup() //This code is executed once
 {
   //Peripheral Initialization
-  Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
+  Serial.begin(9600);           //Initialize the Serial Port to view information on the Serial Monitor
   I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
   //Sensor Initialization
   Serial.println("Please wait. Initialization in process.");
