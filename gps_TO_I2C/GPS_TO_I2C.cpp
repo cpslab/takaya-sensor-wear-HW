@@ -45,39 +45,41 @@ bool GPS_TO_I2C::init(){
     // ボーレイト設定
     cmd[0] = LCR;
     cmd[1] = 0x83;
-    Wire.write(cmd, 2);    // Divisor Latch Enable
+    Wire.write((const uint8_t*)cmd, 2);    // Divisor Latch Enable
     Wire.endTransmission();
     
     Wire.beginTransmission(addr);
     cmd[0] = DLL;
     cmd[1] = 78;
-    Wire.write(cmd, 2);    // divisor latch LSB
+    Wire.write((const uint8_t*), 2);    // divisor latch LSB
     Wire.endTransmission();
     
     Wire.beginTransmission(addr);
     cmd[0] = DLH;
     cmd[1] = 0;
-    Wire.write(cmd, 2);    // divisor latch MSB sle
+    Wire.write((const uint8_t*)cmd, 2);    // divisor latch MSB sle
     Wire.endTransmission();
     
     Wire.beginTransmission(addr);
     // 通信フォーマット設定
     cmd[0] = LCR;
     cmd[1] = 0x03;
-    Wire.write(cmd, 2);
+    Wire.write((const uint8_t*), 2);
     Wire.endTransmission();
     
     // FIFO設定
     Wire.beginTransmission(addr);
     cmd[0] = FCR;
     cmd[1] = 0xc7;
-    Wire.write(cmd, 2);
+    Wire.write((const uint8_t*)cmd, 2);
     Wire.endTransmission();
     Serial.println("end setup");
     
     for (int i = 0; i < 6; i++) {
         dataes[i] = "";
     }
+    
+    return true;
 
 }
 

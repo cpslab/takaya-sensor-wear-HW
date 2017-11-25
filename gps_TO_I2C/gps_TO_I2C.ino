@@ -1,5 +1,3 @@
-#include "GPS_TO_I2C.h"
-#include <HardwareSerial.h>
 
 void setup() {
   // put your setup code here, to run once:
