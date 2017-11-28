@@ -1,13 +1,13 @@
 #include "Wire.h"
 
-typedef struct{
-    String La;
-    String latitude;
-    String Lo;
-    String longitude;
+typedef struct {
+  float La;
+  String latitude;
+  float Lo;
+  String longitude;
 } gpsdata;
 
-const int addr = (0x98 >> 1);    // define the I2C Address
+const int addr = (0x90 >> 1);    // define the I2C Address
 // general register definition
 const uint8_t RHR = (0x00 << 3); //Receive Holding Register
 const uint8_t THR = (0x00 << 3); //Transmit Holding Register
@@ -139,26 +139,73 @@ gpsdata getGPS() {
     }
     for (i = 0; i < j; i++) {
       if (dataes[i].startsWith("$GPGGA")) {
-//        Serial.print(dataes[i]);
+        //        Serial.print(dataes[i]);
         String gpgga = dataes[i].substring(7);
-//                Serial.println(gpgga);
+        //                Serial.println(gpgga);
         String d[4] = {"", "", "", ""};
         d[0] = gpgga.substring(11, 20); //緯度
         d[1] = gpgga.substring(21, 22); //北緯、南緯
         d[2] = gpgga.substring(23, 33); //経度
         d[3] = gpgga.substring(34, 35); //東経、西経
-        if (d[0].startsWith(",") || d[1].startsWith("0") || d[3].startsWith("1")) {
+        if (d[0].startsWith(",")) {
           Serial.println("false");
-        } else {
-//          Serial.println(d[0]);
-//          Serial.println(d[1]);
-//          Serial.println(d[2]);
-//          Serial.println(d[3]);
-          GPS_data.La = d[0];
-          GPS_data.latitude = d[1];
-          GPS_data.Lo = d[2];
-          GPS_data.longitude = d[3];
+          GPS_data.La = 0.;
+          GPS_data.latitude = "";
+          GPS_data.Lo = 0.;
+          GPS_data.longitude = "";
           return GPS_data;
+        } else {
+          if (d[1].equals("N") || d[1].equals("S")) {
+            String la[2];
+            String lo[2];
+            la[0] = d[0].substring(0, 2);
+            la[1] = d[0].substring(2);
+            lo[0] = d[2].substring(0, 3);
+            lo[1] = d[2].substring(3);
+
+            if (d[1].equals("N")) {
+              if (d[3].equals("E")) {
+                GPS_data.La = la[0].toFloat() + la[1].toFloat()/60.0;
+                GPS_data.latitude = d[1];
+                GPS_data.Lo = lo[0].toFloat() + lo[1].toFloat()/60.0;
+                GPS_data.longitude = d[3];
+                return GPS_data;
+              }else{
+                 GPS_data.La = la[0].toFloat() + la[1].toFloat()/60.0;
+                GPS_data.latitude = d[1];
+                GPS_data.Lo = -(lo[0].toFloat() + lo[1].toFloat()/60.0);
+                GPS_data.longitude = d[3];
+                return GPS_data;
+              }
+            }else{
+              if(d[3].equals("E")){
+                GPS_data.La = -(la[0].toFloat() + la[1].toFloat()/60.0);
+                GPS_data.latitude = d[1];
+                GPS_data.Lo = lo[0].toFloat() + lo[1].toFloat()/60.0;
+                GPS_data.longitude = d[3];
+                return GPS_data;
+              }else{
+                GPS_data.La = -(la[0].toFloat() + la[1].toFloat()/60.0);
+                GPS_data.latitude = d[1];
+                GPS_data.Lo = -(lo[0].toFloat() + lo[1].toFloat()/60.0);
+                GPS_data.longitude = d[3];
+                return GPS_data;
+              }
+            }
+
+          } else {
+            Serial.println("false22");
+            GPS_data.La = 0.;
+            GPS_data.latitude = "";
+            GPS_data.Lo = 0.;
+            GPS_data.longitude = "";
+            return GPS_data;
+          }
+          //          Serial.println(d[0]);
+          //          Serial.println(d[1]);
+          //          Serial.println(d[2]);
+          //          Serial.println(d[3]);
+
         }
       }
     }
@@ -166,11 +213,13 @@ gpsdata getGPS() {
   //    Serial.println();
 }
 
-void printGPS(gpsdata g){
-  Serial.println(g.La);
-  Serial.println(g.latitude);
-  Serial.println(g.Lo);
-  Serial.println(g.longitude);
+void printGPS(gpsdata g) {
+  if (g.latitude != "") {
+    Serial.println(g.La);
+    Serial.println(g.latitude);
+    Serial.println(g.Lo);
+    Serial.println(g.longitude);
+  }
 }
 
 
