@@ -10,7 +10,7 @@
 /**************************************************************/
 
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(5,4); // RX, TX
+SoftwareSerial mySerial(5,4); // RX, TX(モジュール側のTX,RXを挿す)
 void setup()
 {
  Serial.begin(115200);
