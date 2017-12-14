@@ -3,9 +3,13 @@
 #define INT_PIN 35   // Interrupt用ピン
 #define RESET_PIN 32 // Reset用ピン(使わないだろうけど)
 
+#define CALIBRATION_GRAV_TIME 10 // 重力方向のキャリブレーションを行う時間
+#define WARNING_THRESHOLD 10 // 警告を出す秒数(デフォルトと重力方向が違うときにカウンタが増える。増えたカウンタがこの値に達したとき警告)
+
 #define GRAV_X 1 // 重力方向を示す定数
 #define GRAV_Y 2
 #define GRAV_Z 3
+String axis[] = {"error","X","Y","Z"}; // print用配列 (上の定数を1~3で作ったため0~2で参照できないので0要素として"error"が入ってる…だれかfixして)
 
 int defaultGravVector = 0; // キャリブレーション時の重力方向(立っている状態での重力方向)
 int nowGravVector = 0; // 現在の重力方向
@@ -37,26 +41,9 @@ void loop() //This code is looped forever
   if ((millis() - lastStreamTime) >= streamPeriod)
   {
     lastStreamTime = millis();
-    //    mySensor. updateAccel();
-    //    mySensor. updateMag();
-    //    mySensor. updateGyro();
-    //    mySensor.updateEuler();        //Update the Euler data into the structure of the object
-    //    mySensor.updateCalibStatus();  //Update the Calibration Status
     updateGravCount();
     printSensorVal();
   }
-  //digitalPin監視
-  //Serial.print("pin D2:");
-  //int intPin = digitalRead(2);
-  //Serial.println(intPin);
-  //InterruptPinの設定はライブラリに依存(元がArduinoのシールド製品用のライブラリのため)→initBNO055のpinModeの呼び出しで書き換えて解決
-  //  if (digitalRead(INT_PIN)) { // InterruptPinがHIGHになったとき(=Interruptされたとき)反応する
-  //    //    Serial.print("I'm dead!!!!!!!!!!!!!!");      Serial.println(deadCount); // 確認用カウンタ表示
-  //    Serial.print("Moved!:");      Serial.println(deadCount); // 確認用カウンタ表示
-  //    deadCount++;  // 死んだ回数を増やします
-  //    mySensor.resetInterrupt();          //Reset the interrupt line  →これが無いとInterruptのピンがLowに戻らない
-  //    //    delay(100); // 別にいらないんだけど、これが無いとカウンタが一気に4つくらい増えたりするのでとりま記述
-  //  }
 
   if (!isWearerArrived()) {
     Serial.print("Warning!!:"); Serial.println(deadCount); // 確認用カウンタ表示
@@ -93,18 +80,14 @@ void initBNO055() {
 void initGravVector() {
   int setupCount = 0;
   int beforeGrav = 0;
-  while (setupCount < 10) {
+  while (setupCount < CALIBRATION_GRAV_TIME) {
     if ((millis() - lastStreamTime) >= streamPeriod) {
       lastStreamTime = millis();
-      //      mySensor. updateAccel();
-      //      mySensor. updateMag();
-      //      mySensor. updateGyro();
-      //      mySensor.updateEuler();        //Update the Euler data into the structure of the object
-      //      mySensor.updateCalibStatus();  //Update the Calibration Status
       nowGravVector = checkGrav();
       if (beforeGrav != nowGravVector) {
         beforeGrav = nowGravVector;
-        Serial.print("nowGravity:"); Serial.println(nowGravVector);
+        Serial.println();
+        Serial.print("nowGravity:"); Serial.println(axis[nowGravVector]);
         setupCount = 0;
       } else {
         Serial.print(".");
@@ -115,16 +98,16 @@ void initGravVector() {
     }
   }
   Serial.println();
-  Serial.print("initGrav_end:"); Serial.print("defaultGravity="); Serial.println(defaultGravVector);
+  Serial.print("initGrav_end:"); Serial.print("defaultGravity="); Serial.println(axis[defaultGravVector]);
 }
 
-int checkGrav() {
+int checkGrav() { // 現在の重力方向を出力する関数
   int gravVector;
   float gravX = mySensor.readGravAccelX();
   float gravY = mySensor.readGravAccelY();
   float gravZ = mySensor.readGravAccelZ();
 
-  gravX = abs(gravX); gravY = abs(gravY); gravZ = abs(gravZ); //絶対値に変換(比較を行うため)
+  gravX = abs(gravX); gravY = abs(gravY); gravZ = abs(gravZ); // 絶対値に変換(比較を行うため)
   
   if (gravX < gravY) {
     if (gravY < gravZ) {
@@ -142,14 +125,14 @@ int checkGrav() {
   return gravVector; // 1:X 2:Y 3:Z
 }
 
-void updateGravCount() {
+void updateGravCount() { // デフォルトと重力方向が異なる場合にカウンタを更新する関数
   nowGravVector = checkGrav();
   if (nowGravVector != defaultGravVector)differentGravCount++;
   else differentGravCount = 0;
 }
 
-boolean isWearerArrived() {
-  if (differentGravCount > 20)return false;
+boolean isWearerArrived() { // 装着者が生きているかどうか判定
+  if (differentGravCount >= WARNING_THRESHOLD)return false;
   return true;
 }
 void printSensorVal() {
