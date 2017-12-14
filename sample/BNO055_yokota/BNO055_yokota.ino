@@ -48,7 +48,6 @@ void loop() //This code is looped forever
   if (!isWearerArrived()) {
     Serial.print("Warning!!:"); Serial.println(deadCount); // 確認用カウンタ表示
     deadCount++;  // 死んだ回数を増やします
-    mySensor.resetInterrupt();          //Reset the interrupt line  →これが無いとInterruptのピンがLowに戻らない
   }
 }
 /*-----------------------------------------------------*/
@@ -135,6 +134,7 @@ boolean isWearerArrived() { // 装着者が生きているかどうか判定
   if (differentGravCount >= WARNING_THRESHOLD)return false;
   return true;
 }
+
 void printSensorVal() {
   Serial.print("AccRange: ");
   Serial.print(mySensor.readAccelRange(), HEX);
