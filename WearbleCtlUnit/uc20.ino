@@ -82,8 +82,10 @@ bool disable()
 }
 
 
-void enable(){
-  //IOピンで制御
+void powerOn() {
+  digitalWrite(12, HIGH);
+  delay(1000);
+  digitalWrite(12, LOW);
 }
 
 
