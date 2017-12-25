@@ -1,24 +1,20 @@
-HardwareSerial Serial2(1); // RX, TX
+HardwareSerial Serial1(1); // RX, TX
 void setup()
 {
   pinMode(12, OUTPUT);
   digitalWrite(12, LOW);
   Serial.begin(115200);
-  Serial2.begin(115200, SERIAL_8N1, 16, 17);
+  Serial1.begin(115200, SERIAL_8N1, 16, 17); //UC20
+  //  Serial1.begin(115200, SERIAL_8N1, 32, 33); //Twe-Lite
+
 }
 void loop()
 {
-  if (Serial2.available())
-    Serial.write(Serial2.read());
+  if (Serial1.available())
+    Serial.write(Serial1.read());
   if (Serial.available()) {
     char c = Serial.read();
-    if (c == '/') {
-      Serial.println("enable");
-      enable();
-    }
-    else {
-      Serial2.write(c);
-    }
+    Serial1.write(c);
   }
 }
 

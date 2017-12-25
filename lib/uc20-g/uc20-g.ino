@@ -34,9 +34,9 @@ void loop() {
       myUC20G.disable();
       break;
     case 's':
-      update_data();
-//      myUC20G.udpSend("beam.soracom.io", "23080", "[{hoge:huga}]");
-      myUC20G.udpSend("beam.soracom.io", "23080", output);
+//      update_data();
+      myUC20G.udpSend("beam.soracom.io", "23080", "[{hoge:huga}]");
+//      myUC20G.udpSend("beam.soracom.io", "23080", output);
       break;
     case 't':
       myUC20G.at();
