@@ -1,19 +1,19 @@
-bool init(String apn, String user, String pass)
+bool initUC20(String apn, String user, String pass)
 {
   //最初にとりあえずデアクティベートしておくことでアクティベート時のエラー回避
   String str, ret;
 
-  clearSerialBuffer();
-  str = "AT+QIDEACT=1\r\n";
-  Serial2.print(str);
-  ret = Serial2.readStringUntil('\n');
-  Serial.println(ret);
-  ret = Serial2.readStringUntil('\n');
-  Serial.println(ret);
-  if (ret.indexOf("OK") == -1) {  //ちゃんと動くか未確認
-    Serial.println("miss init deact");
-    return false;
-  }
+//  clearSerialBuffer();
+//  str = "AT+QIDEACT=1\r\n";
+//  Serial2.print(str);
+//  ret = Serial2.readStringUntil('\n');
+//  Serial.println(ret);
+//  ret = Serial2.readStringUntil('\n');
+//  Serial.println(ret);
+//  if (ret.indexOf("OK") == -1) {  //ちゃんと動くか未確認
+//    Serial.println("miss init deact");
+//    return false;
+//  }
 
   clearSerialBuffer();
   str = "AT+QICSGP=1,1,\"" + apn + "\",\"" + user + "\",\"" + pass + "\",0\r\n";
@@ -43,7 +43,7 @@ bool init(String apn, String user, String pass)
 }
 
 
-bool disconnect()
+bool disconnectUC20()
 {
   String str, ret;
 
@@ -62,7 +62,7 @@ bool disconnect()
   return true;
 }
 
-bool disable()
+bool disableUC20()
 {
   String str, ret;
 
@@ -82,7 +82,7 @@ bool disable()
 }
 
 
-void powerOn() {
+void powerOnUC20() {
   digitalWrite(12, HIGH);
   delay(1000);
   digitalWrite(12, LOW);
