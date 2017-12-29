@@ -1,5 +1,7 @@
 #include "BME280_MOD-1022.h"
 #include "NineAxesMotion.h"
+#include <Adafruit_NeoPixel.h>
+
 #include <Wire.h>
 
 #define CALIBRATION_GRAV_TIME 1 // 重力方向のキャリブレーションを行う時間
@@ -13,6 +15,7 @@
 #define LED 27 //右側
 #define VIBRATOR1 14 //右側
 #define VIBRATOR2 13 //左側
+#define PIXELS 6
 #define NEOPIXEL1 26
 #define NEOPIXEL2 25
 #define INT_PIN 35   // BNO055 Interrupt用ピン
@@ -61,37 +64,37 @@ typedef struct {
 HardwareSerial  Serial1(1); // TweLiteとの通信ポート
 HardwareSerial  Serial2(2); // UC20Gとの通信ポート
 NineAxesMotion mySensor;   //Object that for the sensor
+Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(6, NEOPIXEL1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(6, NEOPIXEL2, NEO_GRB + NEO_KHZ800);
+
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);           //Initialize the Serial Port to view information on the Serial Monitor
   Serial1.begin(115200, SERIAL_8N1, RXD1, TXD1);
   Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
-//
-//    pinMode(W_DISABLE, OUTPUT);           //W_DISABLE PIN
-//    digitalWrite(W_DISABLE, LOW);
-//      pinMode(PERST, OUTPUT);           //PERST PIN
-//    digitalWrite(PERST, LOW);
 
-
-  pinMode(VIBRATOR1, OUTPUT);
-  digitalWrite(VIBRATOR1, LOW);
-  pinMode(VIBRATOR2, OUTPUT);
-  digitalWrite(VIBRATOR2, LOW);
+  //
+  //    pinMode(W_DISABLE, OUTPUT);           //W_DISABLE PIN
+  //    digitalWrite(W_DISABLE, LOW);
+  //      pinMode(PERST, OUTPUT);           //PERST PIN
+  //    digitalWrite(PERST, LOW);
 
   //Sensor Initialization
   Serial.println("Please wait. Initialization in process.");
-//  digitalWrite(VIBRATOR1, HIGH);
-//  digitalWrite(VIBRATOR2, HIGH);
+  initVibration();
+  initNeopixel();
+  vibrationOn();
+  rainbow(20); neopixelOff();
+  vibrationOff();
+//  rainbow(20); neopixelOff();
+//  rainbow(20); neopixelOff();
 
   I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
-  initUC20("SORACOM.IO", "sora", "sora");
   initGPS();
   initBNO055();
-  //init GravityVector
   initGravVector();
-//  digitalWrite(VIBRATOR1, LOW);
-//  digitalWrite(VIBRATOR1, LOW);
+  initUC20("SORACOM.IO", "sora", "sora");
 
 }
 
