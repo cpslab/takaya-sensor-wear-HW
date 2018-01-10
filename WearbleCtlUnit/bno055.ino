@@ -3,7 +3,6 @@ void initBNO055() {
   mySensor.initSensor();          //The I2C Address can be changed here inside this function in the library
   pinMode(INT_PIN, INPUT_PULLUP); // ライブラリ側の設定を無視してINT_PINとRESET_PINを再設定(ライブラリ側でもpinMode()を2つ呼び出してるだけ)
   pinMode(RESET_PIN, OUTPUT); // 同上、今回使わないだろうけど一応。
-  // ↓正直よくわかっていない
   mySensor.setOperationMode(OPERATION_MODE_NDOF);   //Can be configured to other operation modes as desired いろいろMODEがある。NDOFは9 Dgrees of Freedom Sensor Fusion
   //mySensor.setOperationMode(OPERATION_MODE_AMG);   //Can be configured to other operation modes as desired
   mySensor.setPowerMode(POWER_MODE_LOWPOWER);  // NORMAL(センサ値読める) or LOWPOWER(センサ値読める) or SUSPEND(センサ値読めない)
@@ -19,7 +18,7 @@ void initBNO055() {
   //mySensor.disableSlowNoMotion(); // 3 「動いていないとき」はIterruptしないようにする
   mySensor.enableSlowNoMotion(threshold, duration, NO_MOTION); // 4「動いていないとき(threshold値以下のとき)」はIterruptするようにする
   /*----------------------------*/
-  //↓わからん。監視する軸設定？
+  //↓監視する軸設定？
   mySensor.accelInterrupts(ENABLE, ENABLE, ENABLE);  //Accelerometer interrupts can be triggered from all 3 axes
 }
 

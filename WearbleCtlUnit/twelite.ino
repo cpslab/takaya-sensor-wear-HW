@@ -1,6 +1,8 @@
 void readTweLite() {
   if (Serial1.available()) {
-    Serial.write(Serial1.read());
+    char c = Serial1.read();
+    Serial.write(c);
+    if (c == '\n')vib = true;
   }
 }
 
