@@ -250,11 +250,13 @@ void normalSetup() {
   //Sensor Initialization
   Serial.println("Please wait. Initialization in process.");
   colorWipe(strip1.Color(255, 255, 0), 100);
-  neopixelOff();
+  //  neopixelOff();
   I2C.begin();                    //Initialize I2C communication to the let the library communicate with the sensor.
   initGPS();
   initBNO055();
   initGravVector();
   initUC20("SORACOM.IO", "sora", "sora");
+  neopixelOff();
+
 }
 
