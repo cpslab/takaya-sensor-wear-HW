@@ -9,17 +9,17 @@
 /*                                                            */
 /**************************************************************/
 
-#include <SoftwareSerial.h>
-SoftwareSerial mySerial(5,4); // RX, TX(モジュール側のTX,RXを挿す)
+//#include <SoftwareSerial.h>
+HardwareSerial  Serial1(2); // RX, TX
 void setup()
 {
- Serial.begin(115200);
- mySerial.begin(115200);
+ Serial.begin(9600);
+  Serial1.begin(9600, SERIAL_8N1, 18, 5);
 }
 void loop()
 {
- if(mySerial.available())
- Serial.write(mySerial.read());
+ if(Serial1.available())
+ Serial.write(Serial1.read());
  if (Serial.available())
- mySerial.write(Serial.read());
+ Serial1.write(Serial.read());
 }

@@ -51,7 +51,8 @@ const int streamPeriod = 1000;        //　センサデータの更新頻度
 unsigned long lastStreamTimeGPS = 0;     //To store the last streamed time stamp
 const int streamPeriodGPS = 20;//←ここの数値を30以上に上げると正常にGPS値取れない
 unsigned long lastStreamTimeSIM = 0;
-const int streamPeriodSIM = 60000 * 5;    //データのアップロード頻度
+const int streamPeriodSIM = 6000;    //データのアップロード頻度
+//const int streamPeriodSIM = 60000 * 5;    //データのアップロード頻度
 
 //float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, lng, eX, eY, eZ;
 float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, lng;
