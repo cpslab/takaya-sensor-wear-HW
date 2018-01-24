@@ -13,8 +13,10 @@
 HardwareSerial  Serial1(2); // RX, TX
 void setup()
 {
- Serial.begin(9600);
-  Serial1.begin(9600, SERIAL_8N1, 18, 5);
+// Serial.begin(9600);
+//  Serial1.begin(9600, SERIAL_8N1, 18, 5);
+ Serial.begin(115200);
+  Serial1.begin(115200, SERIAL_8N1, 32, 33);
 }
 void loop()
 {

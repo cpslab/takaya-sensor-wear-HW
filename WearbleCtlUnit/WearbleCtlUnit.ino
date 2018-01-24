@@ -32,6 +32,7 @@
 #define W_DISABLE 12
 #define PERST 15
 #define SW1   0
+#define TWE_EN   2 //TWEのeneble
 
 #define GPS_ADDR 0x90
 
@@ -89,6 +90,9 @@ void setup() {
   Serial1.begin(115200, SERIAL_8N1, RXD1, TXD1);
   Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2);
   pinMode(SW1, INPUT);           //W_DISABLE PIN
+  pinMode(TWE_EN, OUTPUT);           //twe enable
+  digitalWrite(TWE_EN, HIGH);
+  
   initVibration();
   initNeopixel();
 
