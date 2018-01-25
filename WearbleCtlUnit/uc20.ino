@@ -182,3 +182,85 @@ void clearSerialBuffer() {
     }
   }
 }
+
+bool getImei() {
+  String str, ret;
+
+  clearSerialBuffer();
+  str = "AT+CIMI\r\n";
+  Serial2.print(str);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);  //オウム返し
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);  //IMEI
+  imei = ret;
+  ret = Serial2.readStringUntil('\n');
+  ret = Serial2.readStringUntil('\n');
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss get imei");
+    return false;
+  }
+  Serial.println("sucess get imei");
+  return true;
+}
+
+bool getWeb(const char* url) {
+  String str, ret;
+
+  int len = strlen(url);
+  Serial.println(len);
+  String l = String(len);
+
+  clearSerialBuffer();
+  str = "AT+QHTTPURL="+ l +"\r\n";
+  Serial2.print(str);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);
+  if (ret.indexOf("CONNECT") == -1) {
+    Serial.println("miss connect QHTTPURL");
+    return false;
+  }
+  str="";
+  str.concat(url);
+  str.concat("\r\n");
+  Serial2.print(str);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("url1:"+ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("url2:"+ret);
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss url");
+    return false;
+  }
+  str = "AT+QHTTPGET\r\n";
+  Serial2.print(str);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("get1:"+ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("get2:"+ret);
+  if (ret.indexOf("OK") == -1) {
+    Serial.println("miss QHTTPGET");
+    return false;
+  }
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("get3:"+ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("get4:"+ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println("get5:"+ret);
+  str = "AT+QHTTPREAD\r\n";
+  Serial2.print(str);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);
+  if (ret.indexOf("CONNECT") == -1) {
+    Serial.println("miss connect QHTTPREAD");
+    return false;
+  }
+  ret = Serial2.readStringUntil('\n');
+  Serial.println(ret);
+  return true;
+}

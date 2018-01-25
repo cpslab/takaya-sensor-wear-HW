@@ -59,6 +59,8 @@ const int streamPeriodSIM = 6000;    //データのアップロード頻度
 float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, lng;
 uint8_t sensorFlag = 0;
 String jsonData;  //送信用のデータを整形して保存
+String imei = "";
+int webHH, webmm, webss, ledpatt, vibpatt, freq_poll, ferq_upload;
 
 boolean vib = false;  //振動用タスクのフラグ
 boolean led = false;  //neopixel用タスクのフラグ
@@ -92,7 +94,7 @@ void setup() {
   pinMode(SW1, INPUT);           //W_DISABLE PIN
   pinMode(TWE_EN, OUTPUT);           //twe enable
   digitalWrite(TWE_EN, HIGH);
-  
+
   initVibration();
   initNeopixel();
 
@@ -138,6 +140,8 @@ void loop() {
     {
       lastStreamTimeSIM = millis();
       sendDataUDP(jsonData);
+      getImei();
+      getWeb("http://sensor-uniform-api.cps.im.dendai.ac.jp/stat?imsi=440103198189331");
     }
 
 
