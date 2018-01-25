@@ -144,7 +144,7 @@ void loop() {
       lastStreamTimeSIM = millis();
       sendDataUDP(jsonData);
       getImei();
-      getWeb("http://sensor-uniform-api.cps.im.dendai.ac.jp/stat?imsi=440103198189331");
+      getWeb("http://sensor-uniform-api.cps.im.dendai.ac.jp/stat?imsi=");
     }
 
 

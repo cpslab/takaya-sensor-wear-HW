@@ -42,6 +42,20 @@ bool initUC20(String apn, String user, String pass)
   return true;
 }
 
+int split(String data, char delimiter, String *dst){
+    int index = 0;
+    int arraySize = (sizeof(data)/sizeof((data)[0]));  
+    int datalength = data.length();
+    for (int i = 0; i < datalength; i++) {
+        char tmp = data.charAt(i);
+        if ( tmp == delimiter ) {
+            index++;
+            if ( index > (arraySize - 1)) return -1;
+        }
+        else dst[index] += tmp;
+    }
+    return (index + 1);
+}
 
 bool disconnectUC20()
 {
@@ -205,9 +219,13 @@ bool getImei() {
 }
 
 bool getWeb(const char* url) {
-  String str, ret;
+  String str, ret,u;
 
-  int len = strlen(url);
+  u = "";
+  u.concat(url);
+  u.concat(imei);
+  
+  int len = u.length();
   Serial.println(len);
   String l = String(len);
 
@@ -222,9 +240,7 @@ bool getWeb(const char* url) {
     Serial.println("miss connect QHTTPURL");
     return false;
   }
-  str="";
-  str.concat(url);
-  str.concat("\r\n");
+  str=u+"\r\n";
   Serial2.print(str);
   ret = Serial2.readStringUntil('\n');
   Serial.println("url1:"+ret);
@@ -262,5 +278,21 @@ bool getWeb(const char* url) {
   }
   ret = Serial2.readStringUntil('\n');
   Serial.println(ret);
+
+  String messages[7];
+
+  int index = split(ret,',',messages);
+  if(index != 7){
+    Serial.println("fails get message");
+  }
+
+  webHH = messages[0].toInt();
+  webmm = messages[1].toInt();
+  webss = messages[2].toInt();
+  ledpatt = messages[3].toInt();
+  vibpatt = messages[4].toInt();
+  freq_poll = messages[5].toInt();
+  ferq_upload = messages[6].toInt();
+  
   return true;
 }
