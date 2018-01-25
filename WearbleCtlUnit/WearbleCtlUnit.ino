@@ -76,6 +76,9 @@ typedef struct {
   String latitude;
   float Lo;
   String longitude;
+  int hour;
+  int minute;
+  int second;
 } gpsdata;
 
 

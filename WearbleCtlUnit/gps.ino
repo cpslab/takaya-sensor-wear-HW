@@ -117,12 +117,18 @@ gpsdata getGPS() {
         d[1] = gpgga.substring(21, 22); //北緯、南緯
         d[2] = gpgga.substring(23, 33); //経度
         d[3] = gpgga.substring(34, 35); //東経、西経
+        d[4] = gpgga.substring(0,2); //hour
+        d[5] = gpgga.substring(2,4); //minute
+        d[6] = gpgga.substring(4,6); //second
         if (d[0].startsWith(",")) {
           Serial.println("false");
           GPS_data.La = 0.;
           GPS_data.latitude = "";
           GPS_data.Lo = 0.;
           GPS_data.longitude = "";
+          GPS_data.hour = 0;
+          GPS_data.minute = 0;
+          GPS_data.second = 0;
           return GPS_data;
         } else {
           if (d[1].equals("N") || d[1].equals("S")) {
@@ -132,6 +138,10 @@ gpsdata getGPS() {
             la[1] = d[0].substring(2);
             lo[0] = d[2].substring(0, 3);
             lo[1] = d[2].substring(3);
+            
+            GPS_data.hour = d[4].toInt();
+            GPS_data.minute = d[5].toInt();
+            GPS_data.second = d[6].toInt();
 
             if (d[1].equals("N")) {
               if (d[3].equals("E")) {
@@ -169,6 +179,9 @@ gpsdata getGPS() {
             GPS_data.latitude = "";
             GPS_data.Lo = 0.;
             GPS_data.longitude = "";
+            GPS_data.hour = 0;
+            GPS_data.minute = 0;
+            GPS_data.second = 0;
             return GPS_data;
           }
           //          Serial.println(d[0]);
@@ -187,6 +200,7 @@ void printGPS(gpsdata g) {
   if (g.latitude != "") {
     Serial.print(g.La);Serial.print("\t");Serial.println(g.latitude);
     Serial.print(g.Lo);Serial.print("\t");Serial.println(g.longitude);
+    Serial.print(g.hour+"h");Serial.print(g.minute+"m");Serial.println(g.second+"s");
     lat = g.La;
     lng = g.Lo;
   }
