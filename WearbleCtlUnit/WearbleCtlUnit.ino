@@ -60,8 +60,11 @@ float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, 
 uint8_t sensorFlag = 0;
 String jsonData;  //送信用のデータを整形して保存
 
-boolean vib = false;  //振動用タスクのフラグ
-boolean led = false;  //neopixel用タスクのフラグ
+//boolean vib = false;  //振動用タスクのフラグ
+//boolean led = false;  //neopixel用タスクのフラグ
+
+boolean led[] = {0,0,0,0,0,0,0,0,0};  //ledの反応フラグ 転倒,温度,web1,web2,,web3,web4,,web5,web6,web7
+boolean vib[] = {0,0,0,0,0,0,0,0,0};  //vibの反応フラグ 転倒,温度,web1,web2,,web3,web4,,web5,web6,web7
 
 boolean ota = false;  //OTA起動のフラグ
 const char* ssid = "NNNEXUS5X";
@@ -82,7 +85,6 @@ HardwareSerial  Serial2(2); // UC20Gとの通信ポート
 NineAxesMotion mySensor;   //Object that for the sensor
 Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(PIXELS, NEOPIXEL1, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(PIXELS, NEOPIXEL2, NEO_GRB + NEO_KHZ800);
-
 
 void setup() {
   // put your setup code here, to run once:
@@ -129,7 +131,7 @@ void loop() {
 
     if (!isWearerArrived()) {
       sensorFlag = 1;
-      led = true;
+      led[0] = true;
     } else {
       sensorFlag = 0;
     }

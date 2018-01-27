@@ -17,13 +17,13 @@ void vibrationOff() {
 
 void vib_t(void* arg) {
   while (1) {
-    if (vib) {
+    if (vib[0]) {
       vibrationOn();
       neopixelColor(0, 255, 0);
       delay(1000);
       vibrationOff();
       neopixelOff();
-      vib = !vib;
+      vib[0] = !vib[0];
     }
     delay(1);
   }

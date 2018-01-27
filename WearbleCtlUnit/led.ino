@@ -63,11 +63,11 @@ void colorWipe(uint32_t c, uint8_t wait) {
 
 void led_t(void* arg) {
   while (1) {
-    if (led) {
+    if (led[0]) {
       colorWipe(strip1.Color(255, 0, 0), 50);
       colorWipe(strip2.Color(255, 0, 0), 50);
       neopixelOff();
-      led = !led;
+      led[0] = !led[0];
     }
     delay(1);
   }
