@@ -128,7 +128,7 @@ void loop() {
       measureBNO055();
       measureBME280();
       makeSendData();
-            tmp = 50;
+      //            tmp = 50;
       //    sendDataUDP(jsonData);
     }
 
