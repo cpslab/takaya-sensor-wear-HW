@@ -67,8 +67,8 @@ boolean led[] = {0,0,0,0,0,0,0,0,0};  //ledの反応フラグ 転倒,温度,web1
 boolean vib[] = {0,0,0,0,0,0,0,0,0};  //vibの反応フラグ 転倒,温度,web1,web2,,web3,web4,,web5,web6,web7
 
 boolean ota = false;  //OTA起動のフラグ
-const char* ssid = "NNNEXUS5X";
-const char* password = "nnkpoint";
+const char* ssid = "FukusimaWW";
+const char* password = "fukufuku12345";
 
 
 
