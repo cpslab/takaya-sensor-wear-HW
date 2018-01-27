@@ -20,7 +20,7 @@
 #define LED 27 //右側
 #define VIBRATOR1 14 //右側
 #define VIBRATOR2 13 //左側
-#define PIXELS 6
+#define PIXELS 12
 #define NEOPIXEL1 26
 #define NEOPIXEL2 25
 #define INT_PIN 35   // BNO055 Interrupt用ピン
@@ -80,8 +80,8 @@ typedef struct {
 HardwareSerial  Serial1(1); // TweLiteとの通信ポート
 HardwareSerial  Serial2(2); // UC20Gとの通信ポート
 NineAxesMotion mySensor;   //Object that for the sensor
-Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(6, NEOPIXEL1, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(6, NEOPIXEL2, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip1 = Adafruit_NeoPixel(PIXELS, NEOPIXEL1, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(PIXELS, NEOPIXEL2, NEO_GRB + NEO_KHZ800);
 
 
 void setup() {
