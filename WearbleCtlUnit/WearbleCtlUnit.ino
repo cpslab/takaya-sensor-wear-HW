@@ -48,23 +48,25 @@ uint8_t duration = 1;               //At a filter Bandwidth of 62.5Hz, the durat
 //uint8_t deadCount = 0;  // 死んだ回数を数えます
 
 unsigned long lastStreamTime = 0;     //To store the last streamed time stamp
-const int streamPeriod = 1000;        //　センサデータの更新頻度
+unsigned long streamPeriod = 1000;        //　センサデータの更新頻度
 unsigned long lastStreamTimeGPS = 0;     //To store the last streamed time stamp
-const int streamPeriodGPS = 20;//←ここの数値を30以上に上げると正常にGPS値取れない
+unsigned long streamPeriodGPS = 20;//←ここの数値を30以上に上げると正常にGPS値取れない
 unsigned long lastStreamTimeSIM = 0;
-const int streamPeriodSIM = 6000;    //データのアップロード頻度
+unsigned long streamPeriodSIM = 30000;    //データのアップロード頻度
 //const int streamPeriodSIM = 60000 * 5;    //データのアップロード頻度
+//boolean firstFlag = true;
 
 //float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, lng, eX, eY, eZ;
 float accX, accY, accZ, magX, magY, magZ, gyoX, gyoY, gyoZ, tmp, hum, prs, lat, lng;
 uint8_t sensorFlag = 0;
 String jsonData;  //送信用のデータを整形して保存
+float tmpThre = 45;  //警告を出すときの温度のしきい値
 
 //boolean vib = false;  //振動用タスクのフラグ
 //boolean led = false;  //neopixel用タスクのフラグ
 
-boolean led[] = {0,0,0,0,0,0,0,0,0};  //ledの反応フラグ 転倒,温度,web1,web2,,web3,web4,,web5,web6,web7
-boolean vib[] = {0,0,0,0,0,0,0,0,0};  //vibの反応フラグ 転倒,温度,web1,web2,,web3,web4,,web5,web6,web7
+boolean led[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //ledの反応フラグ 転倒,温度,通知ユニット,web1,web2,,web3,web4,,web5,web6,web7
+boolean vib[] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; //vibの反応フラグ 転倒,温度,通知ユニット,web1,web2,,web3,web4,,web5,web6,web7
 
 boolean ota = false;  //OTA起動のフラグ
 const char* ssid = "FukusimaWW";
@@ -94,7 +96,7 @@ void setup() {
   pinMode(SW1, INPUT);           //W_DISABLE PIN
   pinMode(TWE_EN, OUTPUT);           //twe enable
   digitalWrite(TWE_EN, HIGH);
-  
+
   initVibration();
   initNeopixel();
 
@@ -126,6 +128,7 @@ void loop() {
       measureBNO055();
       measureBME280();
       makeSendData();
+            tmp = 50;
       //    sendDataUDP(jsonData);
     }
 
@@ -136,10 +139,19 @@ void loop() {
       sensorFlag = 0;
     }
 
+    if (tmp > tmpThre) {
+      led[1] = true;
+    } else {
+      led[1] = false;
+    }
+
     if ((millis() - lastStreamTimeSIM) >= streamPeriodSIM)
     {
       lastStreamTimeSIM = millis();
       sendDataUDP(jsonData);
+
+      //      led[1] = true;
+      //      delay(10000);
     }
 
 
@@ -264,6 +276,19 @@ void normalSetup() {
   initGravVector();
   initUC20("SORACOM.IO", "sora", "sora");
   neopixelOff();
+
+
+  //first time sensing
+  lastStreamTime = millis();
+  updateGravCount();
+  measureBNO055();
+  measureBME280();
+  makeSendData();
+  lastStreamTimeSIM = millis();
+  sendDataUDP(jsonData);
+  lastStreamTimeGPS = millis();
+  measureGPS(getGPS());
+  readTweLite();
 
 }
 

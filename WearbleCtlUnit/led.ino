@@ -63,11 +63,33 @@ void colorWipe(uint32_t c, uint8_t wait) {
 
 void led_t(void* arg) {
   while (1) {
-    if (led[0]) {
+    if (led[0]) {     //転倒
+      vib[0] = true;
       colorWipe(strip1.Color(255, 0, 0), 50);
       colorWipe(strip2.Color(255, 0, 0), 50);
+      //      delay(50*PIXELS);
       neopixelOff();
+      vib[0] = false;
       led[0] = !led[0];
+      delay(50 * PIXELS);
+
+    }
+
+    if (led[1]) {     //温度
+      //      vib[1] = true;
+      colorWipe(strip1.Color(255, 100, 0), 50);
+      colorWipe(strip2.Color(255, 100, 0), 50);
+      neopixelOff();
+      //      vib[1] = false;
+      led[1] = !led[1];
+    }
+    if (led[2]) {     //通知ユニット
+      vib[2] = true;
+      neopixelColor(0, 255, 0);
+      delay(1000);
+      neopixelOff();
+      vib[2] = false;
+      led[2] = !led[2];
     }
     delay(1);
   }

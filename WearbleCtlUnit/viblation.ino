@@ -17,13 +17,31 @@ void vibrationOff() {
 
 void vib_t(void* arg) {
   while (1) {
+    //    if (vib[0]) {
+    //      vibrationOn();
+    //      neopixelColor(0, 255, 0);
+    //      delay(1000);
+    //      vibrationOff();
+    //      neopixelOff();
+    //      vib[0] = !vib[0];
+    //    }
+
     if (vib[0]) {
       vibrationOn();
-      neopixelColor(0, 255, 0);
-      delay(1000);
+      delay(50 * PIXELS);
       vibrationOff();
-      neopixelOff();
-      vib[0] = !vib[0];
+    } else {
+      vibrationOff();
+    }
+    if (vib[1]) {
+      vibrationOn();
+    } else {
+      vibrationOff();
+    }
+    if (vib[2]) {  //通知ユニット
+      vibrationOn();
+    } else {
+      vibrationOff();
     }
     delay(1);
   }
