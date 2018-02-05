@@ -149,6 +149,8 @@ void loop() {
     {
       lastStreamTimeSIM = millis();
       sendDataUDP(jsonData);
+      initGPS();
+
 
       //      led[1] = true;
       //      delay(10000);
@@ -182,8 +184,8 @@ void makeSendData() {
   jsonData.concat(", \"temp\": ");    jsonData.concat(tmp);
   jsonData.concat(", \"humid\": ");    jsonData.concat(hum);
   jsonData.concat(", \"airPressure\": ");    jsonData.concat(prs);
-  jsonData.concat(", \"lat\": ");    jsonData.concat(lat);
-  jsonData.concat(", \"lng\": ");    jsonData.concat(lng);
+  jsonData.concat(", \"lat\": ");    jsonData.concat(String(lat, 6));
+  jsonData.concat(", \"lng\": ");    jsonData.concat(String(lng, 6));
   jsonData.concat(", \"flags\": ");    jsonData.concat(sensorFlag);
   jsonData.concat("}");
   Serial.print("json:");
